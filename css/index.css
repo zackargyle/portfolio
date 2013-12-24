@@ -1,0 +1,124 @@
+html, body {
+    min-width: 1300px;
+}
+
+/* Fade in/out for navbar */
+#nav {
+    min-width: 1300px;
+	opacity: 0;
+    transition: opacity 0.4s ease-in;
+    -ms-transition: opacity 0.4s ease-in;
+    -moz-transition: opacity 0.4s ease-in;
+    -webkit-transition: opacity 0.4s ease-in;
+}
+
+#nav.show {
+	opacity: .8;
+    transition: opacity 0.4s ease-out;
+    -ms-transition: opacity 0.4s ease-out;
+    -moz-transition: opacity 0.4s ease-out;
+    -webkit-transition: opacity 0.4s ease-out;
+}
+
+#about, #code, #game, #message {
+    padding-top: 6%;
+}
+
+/* Code Snippets */ 
+#code {
+    width: 60%;
+    margin-left: 17.5%;
+}
+
+.code-snippet {
+    width: 15%;
+    margin-left: 10%;
+    margin-top: 5%;
+}
+
+.code-snippet:hover {
+    cursor: pointer;
+}
+
+/* Firebase messages */
+
+#message {
+    margin-top: 4%;
+    padding: 2%;
+}
+
+#message-container {
+    width: 60%;
+    height: 475px;
+    margin-left: 15%;
+    padding: 1% 5% 2% 5%;
+    text-align: center;
+    background-color: #1F3D5C;
+    border: 5px solid rgba(0,0,0,0.8);
+    border-radius: 5px;
+}
+
+#message-container h2 {
+    color: white;
+}
+
+#message-add input {
+    height: 40px;
+    width: 200px;
+}
+
+#message-list {
+    width: 80%;
+    margin-left: 10%;
+    background-color: white;
+    border: 3px solid rgba(0,0,0,0.8);
+}
+
+.message-text {
+    text-align: left;
+    border: 1px solid rgba(0,0,0,0.8);
+    width: 100%;
+    vertical-align: center;
+    font-size: 1.5em;
+}
+
+.message-text div {
+    padding: 2% 2% .5% 2%;
+}
+
+/* Game Blocks */
+#game {
+
+}
+
+#game-start {
+    position: absolute;
+    top: 1900;
+    width: 20%;
+    height: 45px;
+    margin-left: -10%;
+    min-width: 100px;
+    font-size: 2em;
+}
+
+#game-canvas {
+    position: absolute;
+    border: 5px solid black;
+    left: 100;
+    background-image: url("../images/background.png");
+    margin-bottom: 200px;
+}
+
+.game-block {
+    position: absolute;
+    background-image: url("../images/cloud.png");
+    background-size: 100%;
+    width: 60px;
+    height: 27px;
+}
+
+#game-cliff {
+    position: absolute;
+    background-image: url("../images/cliff.png");
+    background-size: 100%;
+}

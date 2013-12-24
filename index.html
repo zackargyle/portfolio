@@ -1,0 +1,82 @@
+
+<html ng-app="onlineResume">
+<head>
+  <title>Zack Argyle</title>
+  <link rel="stylesheet" href="css/index.css"/>
+  <link rel="stylesheet" href="css/bootstrap.min.css"/>
+
+  <script src="lib/angular.min.js"></script>
+  <script src="lib/ui-bootstrap-tpls-0.3.0.min.js"></script>
+  <script src='lib/firebase.js'></script>
+
+</head>
+<body ng-controller="mainCtrl" id="welcome">
+
+  <div id="nav" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container" style="width:100%">
+        <a class="brand" href="#"></a>
+        <a class="brand" href="https://www.facebook.com/zackargyle"><img src="images/facebook.png"></a>
+        <a class="brand" href="https://github.com/zackargyle"><img src="images/git-hub.png"></a>
+        <a class="brand" href="http://www.linkedin.com/in/zackargyle"><img src="images/linked-in.png"></a>
+        <a class="brand" href="http://stackoverflow.com/users/2642809/zack-argyle"><img src="images/stack-overflow.png"></a>
+        <a class="brand" href="http://jsfiddle.net/user/zargyle/fiddles/"><img src="images/jsfiddle.png"></a>
+      </div>
+    </div>
+  </div>
+
+  <carousel interval="3000" id="carousel1">
+    <slide ng-repeat="slide in slides" active="slide.active">
+      <img ng-src="{{slide.image}}" style="margin:auto;" ng-click="scrollTo(slide.image)">
+      <div class="carousel-caption">
+        <h4>{{slide.title}}</h4>
+      </div>
+    </slide>
+  </carousel>
+
+  <!-- About Me -->
+  <div id="about">
+    ABOUT
+  </div>
+    
+  <!-- Code Snippets -->
+  <div id="code" ng-controller="codeCtrl">
+    <img class="code-snippet" ng-repeat="snippet in snippets" ng-src="images/{{snippet}}.png" popover-placement="bottom" popover-trigger="mouseenter" popover="{{snippet}}" snippet>
+  </div>
+
+  <!-- Firebase Real-time Messages -->
+  <div id="message" ng-controller="messageCtrl">
+    <div id="message-container">
+      <h2> Leave a real-time message for all to see!</h2>
+      <form id="message-add">
+        <input type="text" ng-model="name" placeholder="Name">
+        <input type="text" ng-model="text" placeholder="Message">
+        <button type="button" class="btn btn-default" ng-click="addMessage()">Send Message</button>
+      </form>
+      <div id="message-list">
+        <div class="message-text" ng-repeat="message in messages|orderBy:'id':true" ng-hide="$index > 5">
+          <div>{{message.name}} says: {{message.text}}<div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Canvas -->
+  <div id="game" ng-controller="gameCtrl">
+    <button id="game-start" class="btn btn-success" ng-click="startGame()" ng-disabled="playing">Start Game</button>
+    <canvas id="game-canvas"></canvas>
+    <div class="game game-block" id="game-block0"></div>
+    <div class="game game-block"id="game-block1"></div>
+    <div class="game game-block"id="game-block2"></div>
+    <div class="game game-block" id="game-block3" move></div>
+    <div class="game" id="game-cliff"></div> 
+  </div>
+
+  <script src="js/controllers.js"></script>
+  <script src="js/directives.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/platformer.js"></script>
+
+  </body>
+
+</html>

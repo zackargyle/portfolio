@@ -1,0 +1,12 @@
+Ideas:
+
+- Initial view is one big carousel like Hulu's home page
+- Leave a message with firebase
+- Scroll to capabilities at carousel header
+
+
+Nav: Github, StackOverflow, JSFiddle, LinkedIn, Facebook
+
+Code Snippets
+Play A Game
+Leave A Message
