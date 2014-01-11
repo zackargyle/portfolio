@@ -1,0 +1,29 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #0000aa">class</span> <span style="color: #00aa00; text-decoration: underline">ObtainAuthTokenAndUserId</span>(views.ObtainAuthToken):
+    <span style="color: #aa5500">&quot;&quot;&quot;Class that returns both the token and the user data after authentication&quot;&quot;&quot;</span>
+
+    <span style="color: #0000aa">def</span> <span style="color: #00aa00">post</span>(<span style="color: #00aaaa">self</span>, request):
+
+        serializer = <span style="color: #00aaaa">self</span>.serializer_class(data=request.DATA)
+
+        <span style="color: #0000aa">if</span> serializer.is_valid():
+            request_user = serializer.object[<span style="color: #aa5500">&#39;user&#39;</span>]
+            groups = []
+
+            <span style="color: #0000aa">for</span> group <span style="color: #0000aa">in</span> request_user.groups.all():
+                groups.append(group.name)
+
+            token, created = Token.objects.get_or_create(user=request_user)
+            agent_id = <span style="color: #00aaaa">None</span>
+
+            <span style="color: #0000aa">try</span>:
+                agent_id = request_user.agent.id
+            <span style="color: #0000aa">except</span> Agent.DoesNotExist:
+                <span style="color: #0000aa">pass</span>
+
+            <span style="color: #0000aa">return</span> Response({<span style="color: #aa5500">&#39;token&#39;</span>: token.key,
+                             <span style="color: #aa5500">&#39;user_id&#39;</span>: request_user.id,
+                             <span style="color: #aa5500">&#39;agent_id&#39;</span>: agent_id,
+                             <span style="color: #aa5500">&#39;groups&#39;</span>: groups})
+
+        <span style="color: #0000aa">return</span> Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+</pre></div>

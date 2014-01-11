@@ -1,26 +1,44 @@
 var Platformer = (function() {
 	var JUMPING_HEIGHT = -4.2, START_FALL = 0,
 		LEFT = 37, RIGHT = 39, UP = 38,
-		MOVING_DISTANCE = 250;
+		MOVING_DISTANCE = 240, COUNT = 0,
+		WALK_INDEX = 0, WALK_INDEX_MAX;
 
 	var sprite = {}, keysDown = {}, 
-		gamePieces = [], movingBlocks = [], border = {},
-		canvas, ctx;
+		gamePieces, movingBlocks, hiddenBlocks = [], 
+		border = {}, canvas, ctx, coinsLeft = 5, interval;
 
 	var gravity = 0.1, velY = 0, 
 		speed = 2, blockSpeed = 1;
 
-	var Sprite = function(startX, startY, imageLeft, imageRight, imageJumping) {
-		this.height = 61;
-		this.width = 70;
+	var Sprite = function(startX, startY, height, width, images) {
+		this.height = height;
+		this.width = width;
 		this.x = startX;
 		this.y = startY;
 		this.movingRight = true;
 		this.jumping = false;
+		this.images_left = [];
+		this.images_right = [];
 
-		this.image_left = imageLeft;
-		this.image_right = imageRight;
-		this.image_jumping = imageJumping;
+		for (var i = 0; i < images.left.length; i++) {
+			var image = new Image();
+			image.src = images.left[i];
+			this.images_left.push(image);
+		}
+
+		for (var i = 0; i < images.right.length; i++) {
+			var image = new Image();
+			image.src = images.right[i];
+			this.images_right.push(image);
+		}
+		WALK_INDEX_MAX = images.right.length - 1;
+
+  	this.image_jump_left = new Image();
+  	this.image_jump_left.src = images.jump_left;
+
+  	this.image_jump_right = new Image();
+  	this.image_jump_right.src = images.jump_right;
 	}
 
 	var setupCanvas = function(canvasId, collisionClass) {
@@ -28,15 +46,18 @@ var Platformer = (function() {
 		ctx = canvas.getContext('2d');
 
 		// Register game pieces
-		gamePieces = [];
+		gamePieces = [], movingBlocks = [];
 		elements = document.getElementsByClassName(collisionClass);
 
 		for (var i = 0; i < elements.length; i++) {
 			var element = elements[i];
+			element.style.display = "block";
 
 			// Register game pieces
 			gamePieces.push({
+				id: element.id,
 				moves: element.hasAttribute('move'),
+				isCoin: element.hasAttribute('coin'),
 				left: element.offsetLeft - canvas.offsetLeft - sprite.width,
 				top: element.offsetTop - canvas.offsetTop - sprite.height,
 				right: element.offsetLeft - canvas.offsetLeft + element.offsetWidth,
@@ -49,6 +70,7 @@ var Platformer = (function() {
 					id: element.id,
 					delta: 0,
 					right: true,
+					init_pos: element.offsetLeft,
 					index: gamePieces.length - 1
 				});
 			}
@@ -68,7 +90,29 @@ var Platformer = (function() {
 			right: canvas.width - sprite.width
 		}
 
+		// Add secret paths
+		elements = document.getElementsByClassName("secret");
+		for (var i = 0; i < elements.length; i++) {
+			hiddenBlocks.push({
+				left: element.offsetLeft - canvas.offsetLeft - sprite.width,
+				top: element.offsetTop - canvas.offsetTop - sprite.height,
+				right: element.offsetLeft - canvas.offsetLeft + element.offsetWidth,
+				bottom: element.offsetTop - canvas.offsetTop + element.offsetHeight,
+				element: elements[i]
+			});
+		}
+
 	};
+
+	var isInside = function(block) {
+		if (sprite.x > block.left &&
+			  sprite.x < block.right &&
+			  sprite.y >= block.top - 100 &&
+			  sprite.y <= block.bottom) {
+			return true;
+		}
+		return false;
+	} 
 
 	var standingOn = function(gamePiece) {
 		if (sprite.x >= gamePiece.left &&
@@ -79,10 +123,18 @@ var Platformer = (function() {
 		else return false;
 	};
 
-	var collisionWith = function(element, x, y) {
+	var collisionWith = function(element, x, y, i) {
 		if (x > element.left && x < element.right &&
 			y > element.top && y < element.bottom) {
-			return true;
+			if (element.isCoin) {
+				document.getElementById(element.id).style.display = "none";
+				gamePieces.splice(i, 1);
+				coinsLeft--;
+				return false
+			}
+			else {
+				return true;
+			}
 		}
 		return false;
 	};
@@ -112,7 +164,8 @@ var Platformer = (function() {
 				block.delta += 1;
 
 				// Update sprite
-				if (standingOn(gamePiece) || collisionWith(gamePiece, sprite.x, sprite.y)) {
+				if (standingOn(gamePiece) || collisionWith(gamePiece, sprite.x, sprite.y, i)) {
+					// If you get pushed into someone, block.right = !block.right
 					if (block.right) {
 						sprite.x += blockSpeed;
 					} else {
@@ -133,7 +186,7 @@ var Platformer = (function() {
 			for (var i = 0; i < gamePieces.length; i++) {
 				var gamePiece = gamePieces[i];
 
-				if (collisionWith(gamePiece, sprite.x, tempY)) {
+				if (collisionWith(gamePiece, sprite.x, tempY, i)) {
 					// Falling or rising?
 					if (velY >= 0) {
 					 	// Land on object
@@ -184,7 +237,7 @@ var Platformer = (function() {
 				}
 
 				// Collision
-				if (collisionWith(gamePiece, tempX, sprite.y)) {
+				if (collisionWith(gamePiece, tempX, sprite.y, i)) {
 					return;
 				}
 			}
@@ -192,9 +245,44 @@ var Platformer = (function() {
 			// Keep within bounds
 			if (tempX > border.left && tempX < border.right) {
 				sprite.x = tempX;
+
+				if (++COUNT % 20 === 0) { // Switch walking image
+					WALK_INDEX = (WALK_INDEX === WALK_INDEX_MAX) ? 0 : ++WALK_INDEX;
+				}
+
 			}
 		}
 	};
+
+	var handleHiddenPaths = function() {
+		// Check for secret passages
+		for (var i = 0; i < hiddenBlocks.length; i++) {
+			var block = hiddenBlocks[i];
+			if (isInside(block)) {
+				block.element.style.opacity = ".5";
+			} else {
+				block.element.style.opacity = "1";
+			}
+		}
+	}
+
+	var handleGameOver = function() {
+		if (coinsLeft === 0) {
+			var e = document.createEvent( "HTMLEvents" );
+		  e.initEvent( "gameOver", true, true );
+		  window.dispatchEvent(e); // Tell Angular controller
+		  clearInterval(interval); // Stop main
+		  document.getElementById("game-start").style.display = "block";
+
+		  // Reset all moving blocks to initial position
+		  for (var i = 0; i < movingBlocks.length; i++) {
+				var block = movingBlocks[i];
+				var element = document.getElementById(block.id);
+				element.style.left = block.init_pos + "px";
+			}
+
+		}
+	}
 
 	// The main game loop
 	var main = function () {
@@ -204,29 +292,44 @@ var Platformer = (function() {
 		handleKeydown();
 		handleJump();
 		handleMovingPieces();
+		handleHiddenPaths();
+		handleGameOver();
 
-		if (sprite.jumping) {
-			ctx.drawImage(sprite.image_jumping, sprite.x, sprite.y);
-		} else if (sprite.movingRight) {
-			ctx.drawImage(sprite.image_right, sprite.x, sprite.y);
+		if (sprite.movingRight) {
+			if (sprite.jumping) {
+				ctx.drawImage(sprite.image_jump_right, sprite.x, sprite.y);
+			} else {
+				ctx.drawImage(sprite.images_right[WALK_INDEX], sprite.x, sprite.y);
+			}
 		} else {
-			ctx.drawImage(sprite.image_left, sprite.x, sprite.y);
+			if (sprite.jumping) {
+				ctx.drawImage(sprite.image_jump_left, sprite.x, sprite.y);
+			} else {
+				ctx.drawImage(sprite.images_left[WALK_INDEX], sprite.x, sprite.y);
+			}
 		}
+
+		// Display coins left
+		ctx.font = "24px Helvetica";
+		ctx.textAlign = "left";
+		ctx.textBaseline = "top";
+		ctx.fillText("Coins left: " + coinsLeft, 0, 0);
 
 	};
 	
 	return {
-		setupSprite: function(startX, startY, imageLeft, imageRight, imageJumping) { 
-			sprite = new Sprite(startX, startY, imageLeft, imageRight, imageJumping);
+		setupSprite: function(startX, startY, height, width, images) { 
+			sprite = new Sprite(startX, startY, height, width, images);
 		},
 		setupCanvas: function(canvasId, collisionClass) { 
+			setGamePos();
 			if (sprite) {
 				setupCanvas(canvasId, collisionClass);
 			} else {
 				console.log("Must register Sprite before Canvas.");
 			}
 		},
-		start: function() { 
+		start: function() {
 
 			addEventListener("keydown", function (e) {
 				if ([LEFT,RIGHT,UP].indexOf(e.keyCode) != -1) e.preventDefault();
@@ -238,35 +341,100 @@ var Platformer = (function() {
 			}, false);
 
 			if (canvas && sprite) {
-				setInterval(main, 1);
+				interval = setInterval(main, 1);
 			} else {
 				console.log("Must register both Sprite and Canvas with Platformer.");
 			}
+			coinsLeft = 5;
 		}
 	};
 
 })();
 
+/* 
+	Set up gaming environment.
+	Platformer requires absolute positions, so this is a responsive
+	design segment for the game canvas
+*/
+var setGamePos = function() {
 
-(function() {
+	document.getElementById("game-header").style.display = "block";
+	document.getElementById("game-container").style.display = "block";
+
+	var container = document.getElementById("game-container");
+
+	var WIDTH = 1170,
+			TOP = container.offsetTop + 43,
+		  LEFT = (window.innerWidth - WIDTH ) / 2;
+
   var canvas = document.getElementById("game-canvas");
   canvas.height = 400;
-  canvas.width = 1210;
-  canvas.style.top = document.getElementById("game-start").offsetTop + 50;
-  canvas.style.left = (window.innerWidth - 1220) / 2;
+  canvas.width = WIDTH;
+  canvas.style.top = TOP; /* game-start.top + 50 */
+  canvas.style.left = LEFT;
+  canvas.style.display = "block";
 
-  var startTop = parseInt(canvas.style.top) + 352;
-  var startLeft = 250;
-
-  var blocks = document.getElementsByClassName("game-block");
-  for (var i = 0; i < blocks.length; i++) {
-    blocks[i].style.left = startLeft + (i * 140) + "px";
-    blocks[i].style.top = startTop - (i * 75) + "px";
+  // Clouds
+  var clouds = document.getElementsByClassName("game-block");
+  for (var i = 0; i < clouds.length; i++) {
+    clouds[i].style.left = LEFT + 100 + (i * 140) + "px";
+    clouds[i].style.top = TOP + 352 - (i * 75) + "px";
   }
 
-  var cliff = document.getElementById("game-cliff");
-  cliff.style.top = startTop - 250 + "px";
-  cliff.style.left = (window.innerWidth - 1220) / 2 + 890 + "px";
-  cliff.style.width = "325px";
-  cliff.style.height = "303px";
+  var cliff = document.getElementById("game-cliff"),
+  	  cliffTop = document.getElementById("game-cliff-top"),
+  	  cliffBottom = document.getElementById("game-cliff-bottom");
+
+  cliff.style.left = LEFT + 850 + "px";
+  cliff.style.top = TOP + 100 + "px";
+  cliff.style.display = "block";
+
+  cliffTop.style.left = LEFT + 850 + "px";
+  cliffTop.style.top = TOP + 100;
+  cliffTop.style.display = "block";
+
+  cliffBottom.style.left = LEFT + 850 + "px";
+  cliffBottom.style.top = TOP + 305;
+  cliffBottom.style.display = "block";
+
+  var coin1 = document.getElementById("coin1"),
+      coin2 = document.getElementById("coin2"),
+      coin3 = document.getElementById("coin3"),
+      coin4 = document.getElementById("coin4"),
+      coin5 = document.getElementById("coin5");
+
+  coin1.style.top = TOP + 320 + "px";
+  coin1.style.left = LEFT + 120 + "px";
+
+  coin2.style.top = TOP + 170 + "px";
+  coin2.style.left = LEFT + 398 + "px";
+
+  coin3.style.top = TOP + 60 + "px";
+  coin3.style.left = LEFT + 1100 + "px";
+
+  coin4.style.top = TOP + 360 + "px";
+  coin4.style.left = LEFT + 750 + "px";
+
+  coin5.style.top = TOP + 260 + "px";
+  coin5.style.left = LEFT + 1100 + "px";
+
+  var button = document.getElementById("game-start");
+  button.style.display = "none";
+	button.style.position = "absolute";
+	button.style.marginLeft = 0;
+	button.style.left = LEFT;
+	button.style.top = TOP;
+
+};
+
+(function() {
+	var button = document.getElementById("game-start");
+	button.style.marginLeft = (window.innerWidth - 1170 ) / 2 - 45 + "px";
+
+	if (window.innerWidth < 1200) {
+		button.style.display = "none";
+		document.getElementById("game-header").style.display = "none";
+	} else {
+		document.getElementById("game-container").style.display = "block";
+	}
 })();

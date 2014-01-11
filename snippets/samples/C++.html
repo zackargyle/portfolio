@@ -1,0 +1,31 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;</span> Relation<span style="color: #333333">::</span>selectConst(set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;</span> results, <span style="color: #333399; font-weight: bold">int</span> position, string value) {
+    <span style="color: #008800; font-weight: bold">for</span> (set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;::</span>iterator it <span style="color: #333333">=</span> results.begin(); it <span style="color: #333333">!=</span> results.end(); ) {
+        Tuple t <span style="color: #333333">=</span> <span style="color: #333333">*</span>it;
+        <span style="color: #008800; font-weight: bold">if</span> (t.at(position) <span style="color: #333333">!=</span> value) results.erase(it<span style="color: #333333">++</span>);
+        <span style="color: #008800; font-weight: bold">else</span> <span style="color: #333333">++</span>it;
+	}
+    <span style="color: #008800; font-weight: bold">return</span> results;
+}
+
+set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;</span> Relation<span style="color: #333333">::</span>selectVar(set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;</span> results, <span style="color: #333399; font-weight: bold">int</span> position1, <span style="color: #333399; font-weight: bold">int</span> position2) {
+    <span style="color: #008800; font-weight: bold">for</span> (set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;::</span>iterator it <span style="color: #333333">=</span> results.begin(); it <span style="color: #333333">!=</span> results.end(); ) {
+        Tuple t <span style="color: #333333">=</span> <span style="color: #333333">*</span>it;
+        <span style="color: #008800; font-weight: bold">if</span> (t.at(position1) <span style="color: #333333">!=</span> t.at(position2)) results.erase(it<span style="color: #333333">++</span>);
+        <span style="color: #008800; font-weight: bold">else</span> <span style="color: #333333">++</span>it;
+	}
+    <span style="color: #008800; font-weight: bold">return</span> results;
+}
+
+set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;</span> Relation<span style="color: #333333">::</span>project(set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;</span> results, vector<span style="color: #333333">&lt;</span><span style="color: #333399; font-weight: bold">int</span><span style="color: #333333">&gt;</span> positions) {
+    set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;</span> newResults;
+    <span style="color: #008800; font-weight: bold">for</span> (set<span style="color: #333333">&lt;</span>Tuple<span style="color: #333333">&gt;::</span>iterator it <span style="color: #333333">=</span> results.begin(); it <span style="color: #333333">!=</span> results.end(); <span style="color: #333333">++</span>it) {
+        Tuple t <span style="color: #333333">=</span> <span style="color: #333333">*</span>it;
+        newResults.insert(t.project(positions));
+	}
+    <span style="color: #008800; font-weight: bold">return</span> newResults;
+}
+
+<span style="color: #333399; font-weight: bold">void</span> Relation<span style="color: #333333">::</span>rename(<span style="color: #333399; font-weight: bold">int</span> position, string value) {
+    schema.at(position) <span style="color: #333333">=</span> value;
+}
+</pre></div>

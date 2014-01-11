@@ -1,0 +1,34 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #aaaaaa; font-style: italic">/**</span>
+<span style="color: #aaaaaa; font-style: italic"> * @author zackargyle</span>
+<span style="color: #aaaaaa; font-style: italic"> * A thread that broadcasts a sync event</span>
+<span style="color: #aaaaaa; font-style: italic"> * every 1 hour. The event is received by SPActivity,</span>
+<span style="color: #aaaaaa; font-style: italic"> * which handles the network calls. An activity context is</span>
+<span style="color: #aaaaaa; font-style: italic"> * required to get the DefaultPersistenceService instance.</span>
+<span style="color: #aaaaaa; font-style: italic"> * </span>
+<span style="color: #aaaaaa; font-style: italic"> */</span>
+<span style="color: #0000aa">class</span> <span style="color: #00aa00; text-decoration: underline">UpdateThread</span> <span style="color: #0000aa">extends</span> Thread
+{
+  <span style="color: #0000aa">public</span> <span style="color: #00aaaa">boolean</span> running;
+  <span style="color: #0000aa">private</span> <span style="color: #0000aa">final</span> <span style="color: #00aaaa">int</span> FIVE_MINUTES = <span style="color: #009999">1000</span>*<span style="color: #009999">5</span>*<span style="color: #009999">60</span>;
+  <span style="color: #0000aa">private</span> <span style="color: #0000aa">final</span> <span style="color: #00aaaa">int</span> THIRTY_SECONDS = <span style="color: #009999">1000</span>*<span style="color: #009999">30</span>;
+	
+  <span style="color: #0000aa">public</span> <span style="color: #00aaaa">void</span> <span style="color: #00aa00">run</span>() {
+    <span style="color: #0000aa">this</span>.<span style="color: #1e90ff">running</span> = <span style="color: #0000aa">true</span>;
+    	
+    <span style="color: #aaaaaa; font-style: italic">// Initial delay after login</span>
+    <span style="color: #0000aa">try</span> {
+      sleep(THIRTY_SECONDS);
+    } <span style="color: #0000aa">catch</span> (Exception e) {}
+    	
+    <span style="color: #0000aa">while</span>(<span style="color: #0000aa">this</span>.<span style="color: #1e90ff">running</span>) {
+	  <span style="color: #0000aa">try</span> {
+	   	<span style="color: #aaaaaa; font-style: italic">// Broadcast sync event</span>
+	   	EventBus.<span style="color: #1e90ff">getDefault</span>().<span style="color: #1e90ff">post</span>(
+			<span style="color: #0000aa">new</span> DefaultPersistenceServiceHelperEvents.<span style="color: #1e90ff">SyncDatabase</span>());
+
+	   	sleep(FIVE_MINUTES);
+	  } <span style="color: #0000aa">catch</span> (Exception e) {}
+    } 
+  }
+}
+</pre></div>

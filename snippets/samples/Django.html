@@ -1,0 +1,24 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">
+    <span style="color: #0000aa">def</span> <span style="color: #00aa00">post</span>(<span style="color: #00aaaa">self</span>, request):
+        user = <span style="color: #00aaaa">None</span>
+        <span style="color: #0000aa">try</span>:
+            user = User.objects.get(username=request.DATA[<span style="color: #aa5500">&#39;identifier&#39;</span>])
+        <span style="color: #0000aa">except</span> User.DoesNotExist:
+            <span style="color: #0000aa">try</span>:
+                user = User.objects.filter(email=request.DATA[<span style="color: #aa5500">&#39;identifier&#39;</span>])[<span style="color: #009999">0</span>]
+            <span style="color: #0000aa">except</span> User.DoesNotExist:
+                <span style="color: #0000aa">return</span> Response({<span style="color: #aa5500">&#39;identifier&#39;</span>: <span style="color: #aa5500">&#39;False&#39;</span>})
+
+        <span style="color: #aaaaaa; font-style: italic"># Confirmation code / temp password</span>
+        code = <span style="color: #aa5500">&#39;&#39;</span>.join(getRandom()) <span style="color: #0000aa">for</span> x <span style="color: #0000aa">in</span> <span style="color: #00aaaa">range</span>(PASSWORD_TOKEN_LENGTH))
+        temp = <span style="color: #aa5500">&#39;&#39;</span>.join(getRandom()) <span style="color: #0000aa">for</span> x <span style="color: #0000aa">in</span> <span style="color: #00aaaa">range</span>(TEMP_PASSWORD_LENGTH))
+
+        <span style="color: #aaaaaa; font-style: italic"># Save confirmation code</span>
+        user.steampunkuser.confirmation = code
+        user.steampunkuser.save()
+
+        <span style="color: #aaaaaa; font-style: italic"># Send email</span>
+        ConfirmationPassword(request, user.email, user.id, code, temp).send()
+
+        <span style="color: #0000aa">return</span> Response({<span style="color: #aa5500">&#39;identifier&#39;</span>:<span style="color: #aa5500">&#39;True&#39;</span> })
+</pre></div>

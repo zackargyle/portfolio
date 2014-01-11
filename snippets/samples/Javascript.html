@@ -1,0 +1,36 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">(<span style="color: #008800; font-weight: bold">function</span>() {
+<span style="color: #008800; font-weight: bold">var</span> repeats <span style="color: #333333">=</span> <span style="color: #007020">document</span>.querySelectorAll(<span style="background-color: #fff0f0">&quot;tr&quot;</span>);
+
+  <span style="color: #008800; font-weight: bold">var</span> setupChildren <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span>(element, entry) {
+    <span style="color: #008800; font-weight: bold">if</span>(element.getAttribute(<span style="background-color: #fff0f0">&quot;_value&quot;</span>)) {
+      element.innerHTML <span style="color: #333333">=</span> entry[element.getAttribute(<span style="background-color: #fff0f0">&quot;_value&quot;</span>)]
+    }
+    <span style="color: #008800; font-weight: bold">if</span>(element.getAttribute(<span style="background-color: #fff0f0">&quot;_class&quot;</span>)) {
+      element.className <span style="color: #333333">=</span> entry[element.getAttribute(<span style="background-color: #fff0f0">&quot;_class&quot;</span>)]
+    }
+    <span style="color: #008800; font-weight: bold">for</span>(<span style="color: #008800; font-weight: bold">var</span> i <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i <span style="color: #333333">&lt;</span> element.children.length; i<span style="color: #333333">++</span>) {
+      setupChildren(element.children[i], entry);
+    }
+  }
+
+  <span style="color: #008800; font-weight: bold">var</span> repeatElements <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span>(element) {
+    <span style="color: #008800; font-weight: bold">var</span> id <span style="color: #333333">=</span> element.getAttribute(<span style="background-color: #fff0f0">&quot;_repeat&quot;</span>);
+    <span style="color: #008800; font-weight: bold">var</span> array <span style="color: #333333">=</span> <span style="color: #007020">window</span>[id];
+    <span style="color: #008800; font-weight: bold">var</span> table <span style="color: #333333">=</span> <span style="color: #007020">document</span>.getElementById(id);
+
+    <span style="color: #008800; font-weight: bold">for</span>(<span style="color: #008800; font-weight: bold">var</span> i <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i <span style="color: #333333">&lt;</span> array.length; i<span style="color: #333333">++</span>) {
+      <span style="color: #008800; font-weight: bold">var</span> clone <span style="color: #333333">=</span> element.cloneNode(<span style="color: #008800; font-weight: bold">true</span>);
+      setupChildren(clone, array[i]);
+      table.appendChild(clone);
+    }
+
+    element.parentNode.removeChild(element);
+  }
+
+  <span style="color: #008800; font-weight: bold">for</span>(<span style="color: #008800; font-weight: bold">var</span> i <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i <span style="color: #333333">&lt;</span> repeats.length; i<span style="color: #333333">++</span>) {
+    <span style="color: #008800; font-weight: bold">if</span> (repeats[i].getAttribute(<span style="background-color: #fff0f0">&quot;_repeat&quot;</span>)) {
+      repeatElements(repeats[i]);
+    }
+  }
+})();
+</pre></div>

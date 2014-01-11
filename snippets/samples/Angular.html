@@ -1,0 +1,26 @@
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">angular.module(<span style="background-color: #fff0f0">&#39;angularProject.directives&#39;</span>, [<span style="background-color: #fff0f0">&#39;http-auth-interceptor&#39;</span>])
+  .directive(<span style="background-color: #fff0f0">&#39;authApplication&#39;</span>, <span style="color: #008800; font-weight: bold">function</span>() {
+    <span style="color: #008800; font-weight: bold">return</span> {
+      restrict<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;A&#39;</span>,
+      link<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> (scope, elem, attrs) {
+
+        <span style="color: #008800; font-weight: bold">var</span> main <span style="color: #333333">=</span> <span style="color: #007020">document</span>.getElementById(<span style="background-color: #fff0f0">&quot;main&quot;</span>);
+        <span style="color: #008800; font-weight: bold">var</span> login <span style="color: #333333">=</span> <span style="color: #007020">document</span>.getElementById(<span style="background-color: #fff0f0">&quot;login-holder&quot;</span>);
+
+        <span style="color: #008800; font-weight: bold">var</span> applyLogin <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span>(good) {
+          main.style.display <span style="color: #333333">=</span> good <span style="color: #333333">?</span> <span style="background-color: #fff0f0">&quot;block&quot;</span> <span style="color: #333333">:</span> <span style="background-color: #fff0f0">&quot;none&quot;</span>;
+          login.style.display <span style="color: #333333">=</span> good <span style="color: #333333">?</span> <span style="background-color: #fff0f0">&quot;none&quot;</span> <span style="color: #333333">:</span> <span style="background-color: #fff0f0">&quot;block&quot;</span>;
+        }
+
+        scope.$on(<span style="background-color: #fff0f0">&#39;event:auth-loginRequired&#39;</span>, <span style="color: #008800; font-weight: bold">function</span> () {
+          applyLogin(<span style="color: #008800; font-weight: bold">false</span>)
+        });
+
+        scope.$on(<span style="background-color: #fff0f0">&#39;event:auth-loginConfirmed&#39;</span>, <span style="color: #008800; font-weight: bold">function</span> () {
+          applyLogin(<span style="color: #008800; font-weight: bold">true</span>);
+        });
+
+      }
+    }
+  });
+</pre></div>

@@ -1,10 +1,79 @@
 html, body {
-    min-width: 1300px;
+    height: 100%;
+}
+
+* {
+    box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+body {
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    padding: 0 !important;
+}
+
+header {
+    color: #333333;
+    text-shadow: 1px 2px 2px hsla(0, 100%, 0%, 0.2);
+    text-align: center;
+    line-height: 4rem;
+    font-size: 9vw;
+    font-weight: bold;
+    width: 100%;
+    padding: 125px 0;
+    background-color: hsla(0,0%,100%,0.5);
+    margin: 0;
+}
+
+a {
+	color: black;
+}
+
+a:hover {
+	color: blue;
+	text-decoration: none;
+	font-size: 1.9vw;
+}
+
+#preload {
+    display: none;
+}
+
+#ios-fix {
+    display: none;    
+    position: fixed;
+    height: 100%;
+    z-index: -1;
+}
+
+#background {
+    position: fixed;
+    width: 100%;  
+    opacity: .4;  
+    z-index: -1;
+}
+
+#carousel1 {
+    text-align: center;
+    margin-bottom: 0;
+    background-color: #FAFAFA;
+}
+
+#about-container, #code-container, #message-container, #game-container {
+    width: 100%;
+    background-color: #FAFAFA;
+    padding: 3%;
+    text-align: center;
 }
 
 /* Fade in/out for navbar */
 #nav {
-    min-width: 1300px;
+    position: fixed;
+    top: 0;
+    left: 0;
 	opacity: 0;
     transition: opacity 0.4s ease-in;
     -ms-transition: opacity 0.4s ease-in;
@@ -20,105 +89,200 @@ html, body {
     -webkit-transition: opacity 0.4s ease-out;
 }
 
-#about, #code, #game, #message {
-    padding-top: 6%;
+/* About Section */
+#about-text {
+    margin-left: 2%;
+    font-size: 1.4vw;
 }
 
-/* Code Snippets */ 
+#about-text div {
+    width: 30%;
+    margin: 0 1%;
+    float:left;
+}
+
+#statistics-container {
+    background-color: hsl(125, 98%, 66%);
+    width: 50%;
+    margin-top: 3%;
+    margin-left: 25%;
+    padding: 1.5%;
+}
+
+#statistics {
+    background-color: hsl(23, 100%, 100%);
+    width: 100%;
+    font-family: 'Lato', Calibri, Arial, sans-serif;
+}
+
+#statistics th {
+	padding: 1rem;
+	color: hsl(132, 100%, 45%);
+	font-size: 3.5vw;
+	font-weight: lighter;
+	letter-spacing: 2px;
+}
+
+#statistics td {
+	width: 50%;
+	border-top: 1px solid hsl(118, 98%, 62%);
+	font-weight: lighter;
+    line-height: 1em;
+	font-size: 1.7vw;
+    padding: 1em;
+	padding-left: 10%;
+	color: hsl(120, 100%, 23%);
+}
+
+/* Code Snippets Section */ 
 #code {
-    width: 60%;
-    margin-left: 17.5%;
+    width: 70%;
+    margin-left: 15%;
+}
+
+#code-container h1 {
+    font-size: 5vw;
+}
+
+#code-paragraph, #code-paragraph-click {
+	width: 80%;
+	margin: 2% 10%;
+	font-size: 1.8vw;
+	line-height: 1.7rem;
+	font-weight: lighter;
+	font-family: Georgia ;
+}
+
+#code-paragraph-click {
+	color: hsl(0, 80%, 51%);
 }
 
 .code-snippet {
-    width: 15%;
-    margin-left: 10%;
-    margin-top: 5%;
+    width: 14%;
+    margin: 5%;
 }
 
 .code-snippet:hover {
     cursor: pointer;
 }
 
-/* Firebase messages */
+body .modal {
+    width: 700px;
+}
 
+/* Firebase Messages Section*/
 #message {
-    margin-top: 4%;
-    padding: 2%;
-}
-
-#message-container {
-    width: 60%;
-    height: 475px;
-    margin-left: 15%;
-    padding: 1% 5% 2% 5%;
+    margin: 0 20%;
+    padding: 1% 5% 5% 5%;
     text-align: center;
-    background-color: #1F3D5C;
-    border: 5px solid rgba(0,0,0,0.8);
-    border-radius: 5px;
+    background-color: hsl(209, 99%, 60%);
 }
 
-#message-container h2 {
+#message h3 {
     color: white;
+    font-weight: lighter;
+    font-size: 4vw;
+    line-height: 1em;
+    padding: 2rem;
+}
+
+#message-add {
+    width: 100%;
 }
 
 #message-add input {
-    height: 40px;
-    width: 200px;
+    padding: 1.6rem;
+    width: 40%;
+}
+
+#message-add input:first-child {
+    float: left;
+}
+
+#message-add input:last-child {
+    width: 10%;
+    float: right;
+    background-image: url("../images/glyphicons_222_share.png");
+    background-position: center center;
+    background-size: 60%;
+    background-repeat: no-repeat;
 }
 
 #message-list {
-    width: 80%;
-    margin-left: 10%;
     background-color: white;
-    border: 3px solid rgba(0,0,0,0.8);
 }
 
 .message-text {
     text-align: left;
-    border: 1px solid rgba(0,0,0,0.8);
-    width: 100%;
-    vertical-align: center;
-    font-size: 1.5em;
+    border-bottom: 1px solid hsl(0,0%,80%);
+    font-size: 1.5vw;
+    line-height: 1em;
+    padding: .8rem;
 }
 
 .message-text div {
     padding: 2% 2% .5% 2%;
 }
 
-/* Game Blocks */
-#game {
+/* Game  Section */
 
+#game-container {
+    height: 70%;
+    display: none;
 }
 
 #game-start {
-    position: absolute;
-    top: 1900;
-    width: 20%;
-    height: 45px;
-    margin-left: -10%;
-    min-width: 100px;
-    font-size: 2em;
+    width: 1180px;
+    height: 220px;
+    padding: 205px 0;
+    font-size: 7em;
+    text-align: center;
+    color: white;
+    background-color: black;
+    cursor: pointer;
+    opacity: .8;
 }
 
 #game-canvas {
-    position: absolute;
+    position: absolute; 
     border: 5px solid black;
-    left: 100;
-    background-image: url("../images/background.png");
-    margin-bottom: 200px;
+    background-image: url("../images/game/background.png");
+    display: none;
+}
+
+#game-cliff, #game-cliff-top, #game-cliff-bottom, .game-block, .coin {
+    position: absolute;
+    background-size: 100%;
+    display: none;
 }
 
 .game-block {
-    position: absolute;
-    background-image: url("../images/cloud.png");
-    background-size: 100%;
+    background-image: url("../images/game/cloud.png");
     width: 60px;
     height: 27px;
 }
 
 #game-cliff {
-    position: absolute;
-    background-image: url("../images/cliff.png");
-    background-size: 100%;
+    background-image: url("../images/game/cliff.png");
+    height: 303px;
+    width: 325px;
+}
+
+#game-cliff-top {
+    background-image: url("../images/game/cliff-top.png");
+    height: 100px;
+    width: 325px;
+}
+
+/* top: gameStart.top + 355 */
+#game-cliff-bottom {
+    background-image: url("../images/game/cliff-bottom.png");
+    height: 100px;
+    width: 325px;
+}
+
+.coin {
+    background-image: url("../images/game/coin.png");
+    width: 25px;
+    height: 25px;
 }
