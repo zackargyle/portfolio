@@ -35,9 +35,8 @@ onlineResume.controller('mainCtrl', function($scope, $http) {
 
   for (var i = 0; i < urls.length; i++) {
     $http({method: "GET", url: urls[i]})
-      .success(function(response) {
-        console.log(response.stargazers_count);
-        $scope.gitStars += response.stargazers_count;
+      .success(function(repo) {
+        $scope.gitStars += repo.stargazers_count;
     });
   }
 
@@ -47,8 +46,6 @@ onlineResume.controller('mainCtrl', function($scope, $http) {
   getStackRep();
 
   $scope.graduation = getGradDate();
-
-  window.updateVisitorCount();
 
 });
 
@@ -138,19 +135,4 @@ var getGradDate = function() {
   var today = new Date();
 
   return Math.round(Math.abs((today.getTime() - gradDate.getTime())/(oneDay)));
-}
-
-var updateVisitorCount = function() {
-  var cookies = document.cookie.split(';'), cookie;
-
-  for(var i = 0; i < cookies.length; i++) {
-    var c = cookies[i].trim();
-    if (c.indexOf("visitors=") === 0) {
-      cookie = c.substring("visitors=".length,c.length);
-      if (cookie === "NaN") cookie = 0;
-      console.log(cookie);
-      break;
-    }
-  }
-  document.cookie =  "visitors=" + (++cookie) + "; ";
 }
