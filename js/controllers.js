@@ -30,13 +30,14 @@ onlineResume.controller('mainCtrl', function($scope, $http) {
     window.scrollBy(0,-offset);
   };
 
-  var urls = ["https://api.github.com/repos/zackargyle/angularjs-django-rest-framework-seed/stargazers",
-              "https://api.github.com/repos/zackargyle/django-rest-framework-seed/stargazers"];
+  var urls = ["https://api.github.com/repos/zackargyle/angularjs-django-rest-framework-seed",
+              "https://api.github.com/repos/zackargyle/django-rest-framework-seed"];
 
   for (var i = 0; i < urls.length; i++) {
     $http({method: "GET", url: urls[i]})
       .success(function(response) {
-        $scope.gitStars += response.length;
+        console.log(response.stargazers_count);
+        $scope.gitStars += response.stargazers_count;
     });
   }
 
